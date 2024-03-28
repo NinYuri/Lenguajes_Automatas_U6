@@ -20,6 +20,7 @@ public class Cadena extends javax.swing.JFrame
         };
     Stack<Character> pila = new Stack<>();
     String cadena;
+    char car;
     int estado = 0;
             
     public Cadena() 
@@ -29,6 +30,36 @@ public class Cadena extends javax.swing.JFrame
         setResizable(false);
         setSize(790,380);
         setLocationRelativeTo(null);
+    }
+    
+    private int Columna(char car) {
+        char entrada, cima;
+        
+        for(int i = 0; i < combinaciones.length; i++) {
+            entrada = combinaciones[i].charAt(0);
+            cima = combinaciones[i].charAt(2);
+            
+            if(car == entrada && cima == pila.peek())
+                return i;
+        }
+        return -1;
+    }
+    
+    private boolean Tabla(int pos) {
+        if(acciones[estado][pos].equals("-1"))
+            return false;
+        
+        String conjunto[] = acciones[estado][pos].split(",");
+        estado = Integer.parseInt(conjunto[0]);
+        switch(conjunto[1])
+        {
+            case "0":
+                pila.push(car);
+                break;
+            case "1":
+                pila.pop();
+        }
+        return true;
     }
     
     @SuppressWarnings("unchecked")
@@ -49,7 +80,7 @@ public class Cadena extends javax.swing.JFrame
         txtCadena.setBackground(new java.awt.Color(96, 200, 180, 50));
         txtCadena.setFont(new java.awt.Font("Consolas", 0, 20)); // NOI18N
         txtCadena.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.LOWERED));
-        getContentPane().add(txtCadena, new org.netbeans.lib.awtextra.AbsoluteConstraints(120, 190, 540, 30));
+        getContentPane().add(txtCadena, new org.netbeans.lib.awtextra.AbsoluteConstraints(120, 180, 540, 30));
 
         btnValidar.setBackground(new java.awt.Color(0, 153, 153));
         btnValidar.setFont(new java.awt.Font("Consolas", 1, 24)); // NOI18N
@@ -91,7 +122,6 @@ public class Cadena extends javax.swing.JFrame
 
     private void btnValidarMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnValidarMouseClicked
         cadena = txtCadena.getText();
-        char car;
         int col;
         
         pila.clear();
@@ -100,39 +130,27 @@ public class Cadena extends javax.swing.JFrame
         
         for(int i = 0; i < cadena.length(); i++) {
             car = cadena.charAt(i);
-            for(int j = 0; j < combinaciones.length; j++) {
-                char entrada = combinaciones[j].charAt(0);
-                char cima = combinaciones[j].charAt(2);
-                
-                if(car == entrada && cima == pila.peek())
-                    col = j;
-            }
-            col = -1;
+            col = Columna(car);
             if(col == -1) {
+                System.out.print("Entro al primer error");
                 OptionPane.showMessage("VALIDACIÓN", "Cadena Rechazada", "/img/Close.png");
                 return;
             }
             else {
-                if(acciones[estado][col].equals("-1"))
+                if(!Tabla(col)){
+                    System.out.print("Entro al segundo error");
                     OptionPane.showMessage("VALIDACIÓN", "Cadena Rechazada", "/img/Close.png");
-                else {
-                    String conjunto[] = acciones[estado][col].split(",");
-                    estado = Integer.parseInt(conjunto[0]);
-                    switch(conjunto[1])
-                    {
-                        case "0":
-                            pila.push(car);
-                        case "1":
-                            pila.pop();
-                    }
-                }    
+                    return;
+                } 
             }
         }
         
         if(estado == estAceptacion)
-            OptionPane.showMessage("VALIDACIÓN", "Cadena Válida", "/img/Close.png");
-        else
+            OptionPane.showMessage("VALIDACIÓN", "Cadena Válida", "/img/Info.png");
+        else {
+            System.out.print("Entro al ultimo de los estados - error");
             OptionPane.showMessage("VALIDACIÓN", "Cadena Rechazada", "/img/Close.png");
+        }
     }//GEN-LAST:event_btnValidarMouseClicked
 
     /**
