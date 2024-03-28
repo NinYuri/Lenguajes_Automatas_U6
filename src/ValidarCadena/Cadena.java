@@ -1,32 +1,34 @@
 package ValidarCadena;
-
 import java.awt.Graphics;
 import java.awt.Image;
+import java.util.Stack;
+import javaswingdev.message.MessageDialog;
 import javax.swing.ImageIcon;
 import javax.swing.JPanel;
 
 public class Cadena extends javax.swing.JFrame 
 {
+    MessageDialog OptionPane = new MessageDialog(this);
     FondoPanel fondo = new FondoPanel();
-    int estAceptacion = 2; 
-    String combinaciones[] = {"$,$", "a,$", "a,a", "b,a"};
+    int estAceptacion = 3; 
+    String combinaciones[] = {"$,$", "a,$", "b,$", "a,a", "b,a", "b,b", "c,b"};
+    String acciones[][] = 
+        {
+            {"-1", "0,0", "1,0", "0,0", "1,1", "-1", "-1"}, //Estado 0
+            {"-1", "-1", "1,0", "-1", "1,1", "1,0", "2,1"}, //Estado 1
+            {"3,2", "-1", "-1", "-1", "-1", "-1", "-1"} // Estado 2
+        };
+    Stack<Character> pila = new Stack<>();
+    String cadena;
+    int estado = 0;
             
     public Cadena() 
     {
         setContentPane(fondo);
         initComponents();
-        initComponents();
         setResizable(false);
         setSize(790,380);
         setLocationRelativeTo(null);
-    }
-
-    private void IDK() {
-        String acciones[][] = 
-        {
-            {"2,nada", "0,apilar", "0,apilar", "1,nada"}, //Estado 0
-            {"", "", "", "0,desapilar"} //Estado 1
-        };
     }
     
     @SuppressWarnings("unchecked")
@@ -88,7 +90,49 @@ public class Cadena extends javax.swing.JFrame
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnValidarMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnValidarMouseClicked
+        cadena = txtCadena.getText();
+        char car;
+        int col;
         
+        pila.clear();
+        pila.push('$');
+        cadena += '$';
+        
+        for(int i = 0; i < cadena.length(); i++) {
+            car = cadena.charAt(i);
+            for(int j = 0; j < combinaciones.length; j++) {
+                char entrada = combinaciones[j].charAt(0);
+                char cima = combinaciones[j].charAt(2);
+                
+                if(car == entrada && cima == pila.peek())
+                    col = j;
+            }
+            col = -1;
+            if(col == -1) {
+                OptionPane.showMessage("VALIDACIÓN", "Cadena Rechazada", "/img/Close.png");
+                return;
+            }
+            else {
+                if(acciones[estado][col].equals("-1"))
+                    OptionPane.showMessage("VALIDACIÓN", "Cadena Rechazada", "/img/Close.png");
+                else {
+                    String conjunto[] = acciones[estado][col].split(",");
+                    estado = Integer.parseInt(conjunto[0]);
+                    switch(conjunto[1])
+                    {
+                        case "0":
+                            pila.push(car);
+                        case "1":
+                            pila.pop();
+                    }
+                }    
+            }
+        }
+        
+        if(estado == estAceptacion)
+            OptionPane.showMessage("VALIDACIÓN", "Cadena Válida", "/img/Close.png");
+        else
+            OptionPane.showMessage("VALIDACIÓN", "Cadena Rechazada", "/img/Close.png");
     }//GEN-LAST:event_btnValidarMouseClicked
 
     /**
