@@ -133,13 +133,11 @@ public class Cadena extends javax.swing.JFrame
             car = cadena.charAt(i);
             col = Columna(car);
             if(col == -1) {
-                System.out.print("Entro al primer error");
                 OptionPane.showMessage("VALIDACIÓN", "Cadena Rechazada", "/img/Close.png");
                 return;
             }
             else {
                 if(!Tabla(col)){
-                    System.out.print("Entro al segundo error");
                     OptionPane.showMessage("VALIDACIÓN", "Cadena Rechazada", "/img/Close.png");
                     return;
                 } 
