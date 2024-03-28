@@ -16,7 +16,7 @@ public class Cadena extends javax.swing.JFrame
         {
             {"-1", "0,0", "1,0", "0,0", "1,1", "-1", "-1"}, //Estado 0
             {"-1", "-1", "1,0", "-1", "1,1", "1,0", "2,1"}, //Estado 1
-            {"3,2", "-1", "-1", "-1", "-1", "-1", "-1"} // Estado 2
+            {"3,2", "-1", "-1", "-1", "-1", "-1", "2,1"} // Estado 2
         };
     Stack<Character> pila = new Stack<>();
     String cadena;
@@ -127,6 +127,7 @@ public class Cadena extends javax.swing.JFrame
         pila.clear();
         pila.push('$');
         cadena += '$';
+        estado = 0;
         
         for(int i = 0; i < cadena.length(); i++) {
             car = cadena.charAt(i);
@@ -147,10 +148,8 @@ public class Cadena extends javax.swing.JFrame
         
         if(estado == estAceptacion)
             OptionPane.showMessage("VALIDACIÓN", "Cadena Válida", "/img/Info.png");
-        else {
-            System.out.print("Entro al ultimo de los estados - error");
+        else
             OptionPane.showMessage("VALIDACIÓN", "Cadena Rechazada", "/img/Close.png");
-        }
     }//GEN-LAST:event_btnValidarMouseClicked
 
     /**
